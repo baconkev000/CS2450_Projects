@@ -8,6 +8,4 @@ These instructions will get you through launching phase of this project.
 
 ### Launching Project
 
-- Clone this repository# CS2450_Projects
-# CS2450_Projects
-# CS2450_Projects
+- Clone this repository
