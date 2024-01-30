@@ -1,5 +1,5 @@
 from tkinter import *
-
+from operations.write import Write
 '''
 This code still has some bugs and does not
 include every function.
@@ -125,7 +125,7 @@ def process_code(text):
         exit()
 
     elif command == '11':
-      pass
+      write = Write()
     elif command == '20':
       #LOADs a value from memory into the accumulator
       accumulator = memory[location]

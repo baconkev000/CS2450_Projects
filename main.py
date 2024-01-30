@@ -1,11 +1,3 @@
-"""
-Module Docstring
-"""
-
-__author__ = "Kevin Bacon"
-__version__ = "0.1.0"
-__license__ = "MIT"
-
 class CPU:
     def __init__(self):
         self.accumulator = 0
