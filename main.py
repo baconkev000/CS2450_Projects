@@ -15,7 +15,7 @@ class CPU:
             pass
 
         def execute_WRITE(self, operand):
-        # Write a word from a specific location in memory to the screen
+        # Write a word from a specific location in memory to the screen chagnes
          pass
 
 
