@@ -1,5 +1,5 @@
 from tkinter import *
-from operations.write import Write
+from operations.write.write import Write
 '''
 This code still has some bugs and does not
 include every function.
