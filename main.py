@@ -6,6 +6,9 @@ __author__ = "Kevin Bacon"
 __version__ = "0.1.0"
 __license__ = "MIT"
 
+from operations.write.write import Write
+
+
 class Register:
     def __init__(self):
         self.value = 0
@@ -14,11 +17,18 @@ class Memory:
     def __init__(self, size = 100):
         self.size = size
         self.data = [0] * size
+    
+    def getMemoryLoc(self, loc):
+       return self.data[loc]
+    
+    def updateMemory(self, loc, word):
+       self.data[loc] = word
+    
 
 class CPU:
     def __init__(self):
         accumulator = Register()
-        memory = Memory()
+        self.memory = Memory()
         #Will be used for the user to debug their program
         self.pointer = 0
         #List of valid commands
@@ -28,11 +38,11 @@ class CPU:
 
     def execute_READ(self, memory_location):
     # Read a word from the keyboard into a specific memory_location in memory
-        print('read')
+      return self.memory.getMemoryLoc(memory_location)
 
-    def execute_WRITE(self, memory_location):
-    # Write a word from a specific memory_location in memory to the screen chagnes
-        print('write')
+    def execute_WRITE(self, memory_location, word):
+    # Write a word from a specific memory_location in memory to the screen changes
+      return self.memory.updateMemory(memory_location, word)
         
     def load(self, memory_location):
         print('load')
