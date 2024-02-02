@@ -69,6 +69,37 @@ class CPU:
         # Multiply a word from a specific memory_location to the accumulator
         self.accumulator.value *= int(self.memory.data[memory_location])
 
+    def branch(self, location):
+        if self.pointer != location:#helps to avoid infinite loops
+            self.pointer = location
+        else:
+            print("Cannot branch to self.")
+            self.pointer += 1
+
+    def branchneg(self,location):
+        if self.accumulator.value < 0:#checks if accumulator is negative
+            if self.pointer != location:
+                self.pointer = location
+            else:
+                print("Cannot branch to self.")
+                self.pointer += 1
+        else:
+            self.pointer += 1
+
+    def branchzero(self,location):
+        if self.accumulator.value == 0:#checks if accumulator is zero
+            if self.pointer != location:
+                self.pointer = location
+            else:
+                print("Cannot branch to self.")
+                self.pointer += 1
+        else:
+            self.pointer += 1
+
+    def halt(self):
+        print("Program paused, press enter to resume:")
+        input()
+        self.pointer +=1
 
     def get_code(self):
       '''Gets the user's code from the consol and stores it in the list instructions'''
@@ -242,20 +273,16 @@ class CPU:
             self.pointer += 1
 
           elif command == 40:
-            #BRANCH
-            self.pointer = location
+            self.branch(location)
 
           elif command == 41:
-            #BRANCHNEG
-            print('Branch Neg')
+              self.branchneg(location)
 
           elif command == 42:
-            #BRANCHZERO
-            print('Branch Zero')
+            self.branchzero(location)
 
           elif command == 43:
-            #HALT
-            exit()
+            self.halt()
 def main():
     """ Main entry point of the app """
     
