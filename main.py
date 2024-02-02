@@ -14,7 +14,7 @@ class Register:
 class Memory:
     def __init__(self, size = 100):
         self.size = size
-        self.data = [0] * size
+        self.data = [None] * size
     
     def getMemoryLoc(self, loc):
        return self.data[loc]
@@ -28,9 +28,11 @@ class Memory:
 
 class CPU:
     def __init__(self):
-        accumulator = Register()
+        #A register
+        self.accumulator = Register()
+        #A list where instructions are held
         self.memory = Memory()
-        #Will be used for the user to debug their program
+        #Used to point where we are in the program
         self.pointer = 0
         #List of valid commands
         self.valid_commands = [10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43]
@@ -63,18 +65,6 @@ class CPU:
     def multiply(self, memory_location):
        print('multiply')
 
-    def branch(self, memory_location):
-        print('branch')
-
-    def branchneg(self, memory_location):
-        print('branchneg')
-    
-    def branchzero(self, memory_location):
-        print('branchzero')
-    
-    def halt(self):
-        print('halt')
-
     def get_code(self):
       '''Gets the user's code from the consol and stores it in the list instructions'''
       #Welcome message
@@ -91,15 +81,18 @@ class CPU:
           if ui.upper() != "COMPILE":
             self.instructions.append(ui)
     
-    def process_code(self):
-      '''Processes the user's code
+    def compile(self):
+      '''Processes the user's code and catches an error before running it
       Splits each line of the user's code into two, the command and memory location (command, location)
       Does input validation and turns the command and location into ints
       If the user's input is not valid, it will print an error message and the line the error is on (self.pointer)
-      If the input is valid, it will call on the function the user called
       '''
+      #Will be used to store instructions at a certain area in memory starting from 0
+      memory_location = 0
 
-      #Loops through the user's code and executes the appropriate function
+      no_halt = True
+
+      #Loops through the user's code and checks for errors
       for code in self.instructions:
 
           #Keeps track of the line number for error handling
@@ -110,7 +103,7 @@ class CPU:
           if code[2] != '0':
             location = code[2:]
           else:
-            if len(code[1:]) == 2:
+            if len(code[2:]) == 2:
               location = code[3]
 
             else:
@@ -139,49 +132,130 @@ class CPU:
               print('Memory location out of bounds.')
               exit()
 
+          else:
+             #Code was valid and is added to a location in memory
+             self.memory.data[memory_location] = code
+             memory_location += 1
 
-          #Code is valid and can be processed, calls the function the user called
+             #If a halt instruction is found, this part marks it as found 
+             if command == 43:
+                no_halt = False
+
+      #Ensures that there is a halt instruction so the program doesn't run indefinitley 
+      if no_halt == True:
+         print('Error no halt instruction')
+         exit()
+
+    def process_code(self):
+
+      '''
+      Executes the program
+      Still checks to make sure the instruction is valid in case the user 
+      stores data at a location that previously held an instruction
+      If code is valid, it will execute the appropriate function
+      '''
+
+      self.pointer = 0
+
+      #Processes the code until a halt instruction is reached or a valid instruction is overwritten
+      while True:
+          
+          code = self.memory.getMemoryLoc(self.pointer)
+          
+          if code == None:
+             print('Error, branched to a location with no defined instruction.')
+             exit()
+
+          #Chooses which operation is performed
+          command = code[:2]
+          #Ensures that there is a valid int for choosing location in memory
+          if code[2] != '0':
+            location = code[2:]
+          else:
+            if len(code[2:]) == 2:
+              location = code[3]
+
+            else:
+              print(f'Error on line {self.pointer}.')
+              print('Data Overwriting')
+              exit()
+
+          #Input validation, if the code is not valid, a message is given and the program is exited
+          #Ensures input is an int, the command is valid, and the memory location is in bounds
+          try: 
+              location = int(location)
+              command = int(command)
+
+          except:
+              print(f"Error on line {self.pointer}.")
+              print('Data Overwriting')
+              exit()
+
+          if command not in self.valid_commands:
+              print(f'Error on line {self.pointer}.')
+              print('Data Overwriting')
+              exit()
+
+          elif location <= 0 or location > 99:
+              print(f'Error on line {self.pointer}.')
+              print('Data Overwriting')
+              exit()
+
+          #Instruction at the location is valid and can be processed
           if command == 10:
             self.execute_READ(location)
+            self.pointer += 1
         
           elif command == 11:
             self.execute_WRITE(location)
+            self.pointer += 1
           
           elif command == 20:
             self.load(location)
+            self.pointer += 1
 
           elif command == 21:
             self.store(location)
+            self.pointer += 1
 
           elif command == 30:
             self.add(location)
+            self.pointer += 1
 
           elif command == 31:
             self.subtract(location)
+            self.pointer += 1
 
           elif command == 32:
             self.divide(location)
+            self.pointer += 1
 
           elif command == 33:
             self.multiply(location)
+            self.pointer += 1
 
           elif command == 40:
-            self.branch(location)
+            #BRANCH
+            self.pointer = location
 
           elif command == 41:
-            self.branchneg(location)
+            #BRANCHNEG
+            print('Branch Neg')
 
           elif command == 42:
-            self.branchzero(location)
+            #BRANCHZERO
+            print('Branch Zero')
 
           elif command == 43:
-            self.halt()
+            #HALT
+            exit()
 def main():
     """ Main entry point of the app """
     
     #Creates the cpu object
     cpu = CPU()
     cpu.get_code()
+    cpu.compile()
     cpu.process_code()
 
 if __name__ == "__main__":
