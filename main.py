@@ -15,7 +15,6 @@ class Memory:
     def __init__(self, size = 100):
         self.size = size
         self.data = [None] * size
-        
     
     def getMemoryLoc(self, loc):
        return self.data[loc]
@@ -39,11 +38,6 @@ class CPU:
         self.valid_commands = [10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43]
         #Keeps the users instructions
         self.instructions = []
-        #current location of word
-        self.location = 0
-        #current command
-        self.command = 0
-
 
     def execute_READ(self, memory_location):
     # Read a word from the keyboard into a specific memory_location in memory
@@ -125,20 +119,20 @@ class CPU:
           #Input validation, if the code is not valid, a message is given and the program is exited
           #Ensures input is an int, the command is valid, and the memory location is in bounds
           try: 
-              self.location = int(location)
-              self.command = int(command)
+              location = int(location)
+              command = int(command)
 
           except:
               print(f"Error on line {self.pointer}.")
               print('Expected a four digit int.')
               exit()
 
-          if self.command not in self.valid_commands:
+          if command not in self.valid_commands:
               print(f'Error on line {self.pointer}.')
               print('Invalid command.')
               exit()
 
-          elif self.location < 0 or self.location > 99:
+          elif location < 0 or location > 99:
               print(f'Error on line {self.pointer}.')
               print('Memory location out of bounds.')
               exit()
@@ -149,13 +143,13 @@ class CPU:
              memory_location += 1
 
              #If a halt instruction is found, this part marks it as found 
-             if self.command == 43:
+             if command == 43:
                 no_halt = False
 
       #Ensures that there is a halt instruction so the program doesn't run indefinitley 
       if no_halt == True:
          print('Error no halt instruction')
-         exit()
+         exit()       
 
     def process_code(self):
 
@@ -172,60 +166,94 @@ class CPU:
       while True:
           
           code = self.memory.getMemoryLoc(self.pointer)
-          print(self.pointer)
-          print(code)
+          
           if code == None:
              print('Error, branched to a location with no defined instruction.')
              exit()
 
+          #Chooses which operation is performed
+          command = code[:2]
+          #Ensures that there is a valid int for choosing location in memory
+          if code[2] != '0':
+            location = code[2:]
+          else:
+            if len(code[2:]) == 2:
+              location = code[3]
+
+            else:
+              print(f'Error on line {self.pointer}.')
+              print('Data Overwriting')
+              exit()
+
+          #Input validation, if the code is not valid, a message is given and the program is exited
+          #Ensures input is an int, the command is valid, and the memory location is in bounds
+          try: 
+              location = int(location)
+              command = int(command)
+
+          except:
+              print(f"Error on line {self.pointer}.")
+              print('Data Overwriting')
+              exit()
+
+          if command not in self.valid_commands:
+              print(f'Error on line {self.pointer}.')
+              print('Data Overwriting')
+              exit()
+
+          elif location < 0 or location > 99:
+              print(f'Error on line {self.pointer}.')
+              print('Data Overwriting')
+              exit()
+
           #Instruction at the location is valid and can be processed
-          if self.command == 10:
-            self.execute_READ(self.location)
+          if command == 10:
+            data = self.execute_READ(location)
+            print(f'data: {data}, found at memory location: {location}')
             self.pointer += 1
         
-          elif self.command == 11:
-            print("TEST")
+          elif command == 11:
             word = input("Enter word: ")
-            self.execute_WRITE(self.location, word)
+            self.execute_WRITE(location, word)
             self.pointer += 1
           
-          elif self.command == 20:
-            self.load(self.location)
+          elif command == 20:
+            self.load(location)
             self.pointer += 1
 
-          elif self.command == 21:
-            self.store(self.location)
+          elif command == 21:
+            self.store(location)
             self.pointer += 1
 
-          elif self.command == 30:
-            self.add(self.location)
+          elif command == 30:
+            self.add(location)
             self.pointer += 1
 
-          elif self.command == 31:
-            self.subtract(self.location)
+          elif command == 31:
+            self.subtract(location)
             self.pointer += 1
 
-          elif self.command == 32:
-            self.divide(self.location)
+          elif command == 32:
+            self.divide(location)
             self.pointer += 1
 
-          elif self.command == 33:
-            self.multiply(self.location)
+          elif command == 33:
+            self.multiply(location)
             self.pointer += 1
 
-          elif self.command == 40:
+          elif command == 40:
             #BRANCH
-            self.pointer = self.location
+            self.pointer = location
 
-          elif self.command == 41:
+          elif command == 41:
             #BRANCHNEG
             print('Branch Neg')
 
-          elif self.command == 42:
+          elif command == 42:
             #BRANCHZERO
             print('Branch Zero')
 
-          elif self.command == 43:
+          elif command == 43:
             #HALT
             exit()
 def main():
