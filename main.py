@@ -54,16 +54,21 @@ class CPU:
         print('store')
     
     def add(self, memory_location):
-        print('add')
+        # Add a word from a specific memory_location to the accumulator
+        self.accumulator.value += int(self.memory.data[memory_location])
 
     def subtract(self, memory_location):
-        print('subtract')
+        # Subtract a word from a specific memory_location from the word in the accumulator
+        self.accumulator.value -= int(self.memory.data[memory_location])
 
     def divide(self, memory_location):
-        print('divide')
+        # Divide the word in the accumulator by a word from a specific memory_location
+        self.accumulator.value /= int(self.memory.data[memory_location])
 
     def multiply(self, memory_location):
-       print('multiply')
+        # Multiply a word from a specific memory_location to the accumulator
+        self.accumulator.value *= int(self.memory.data[memory_location])
+
 
     def get_code(self):
       '''Gets the user's code from the consol and stores it in the list instructions'''
