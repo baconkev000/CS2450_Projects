@@ -47,7 +47,7 @@ class TestWrite(unittest.TestCase):
     def test_can_read_unwritten_location(self):
         cpu = CPU()
         result = cpu.execute_READ(0)
-        self.assertEqual(result, 0)
+        self.assertEqual(result, None)
 
     def tearDown(self):
         self.cpu.memory.clearMemory()
