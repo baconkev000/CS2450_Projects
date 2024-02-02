@@ -132,7 +132,7 @@ class CPU:
               print('Invalid command.')
               exit()
 
-          elif location <= 0 or location > 99:
+          elif location < 0 or location > 99:
               print(f'Error on line {self.pointer}.')
               print('Memory location out of bounds.')
               exit()
@@ -149,7 +149,7 @@ class CPU:
       #Ensures that there is a halt instruction so the program doesn't run indefinitley 
       if no_halt == True:
          print('Error no halt instruction')
-         exit()
+         exit()       
 
     def process_code(self):
 
@@ -201,18 +201,20 @@ class CPU:
               print('Data Overwriting')
               exit()
 
-          elif location <= 0 or location > 99:
+          elif location < 0 or location > 99:
               print(f'Error on line {self.pointer}.')
               print('Data Overwriting')
               exit()
 
           #Instruction at the location is valid and can be processed
           if command == 10:
-            self.execute_READ(location)
+            data = self.execute_READ(location)
+            print(f'data: {data}, found at memory location: {location}')
             self.pointer += 1
         
           elif command == 11:
-            self.execute_WRITE(location)
+            word = input("Enter word: ")
+            self.execute_WRITE(location, word)
             self.pointer += 1
           
           elif command == 20:
