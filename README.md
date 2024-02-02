@@ -21,7 +21,7 @@ These instructions will get you through launching phase of this project.
 
 - Be sure to include two integer location after each instruction (including HALT)
 
-**
+```
 I/O operation:
 
 READ = 10                       Read a word from the keyboard into a specific location in memory.
@@ -53,4 +53,4 @@ BRANCHNEG = 41         Branch to a specific location in memory if the accumulato
 BRANCHZERO = 42       Branch to a specific location in memory if the accumulator is zero.
 
 HALT = 43                       Pause the program
-**
+```
