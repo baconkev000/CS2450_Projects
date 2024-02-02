@@ -69,6 +69,7 @@ class CPU:
         # Multiply a word from a specific memory_location to the accumulator
         self.accumulator.value *= int(self.memory.data[memory_location])
 
+
     def get_code(self):
       '''Gets the user's code from the consol and stores it in the list instructions'''
       #Welcome message
