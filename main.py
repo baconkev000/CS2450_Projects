@@ -1,12 +1,10 @@
 """
-Module Docstring
+CS 2450 - Project
 """
 
-__author__ = "Kevin Bacon"
+__author__ = "Kevin Bacon, Luke Durtschi, Matt Scott, Damian Sacks"
 __version__ = "0.1.0"
 __license__ = "MIT"
-
-from operations.write.write import Write
 
 
 class Register:
