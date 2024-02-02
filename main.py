@@ -23,6 +23,9 @@ class Memory:
     
     def updateMemory(self, loc, word):
        self.data[loc] = word
+
+    def clearMemory(self):
+       self.data = [0] * 100
     
 
 class CPU:
