@@ -1,5 +1,10 @@
 """
 CS 2450 - Project
+Contributions:
+    Kevin Bacon: I/O functions, I/O tests, main.py base setup, ReadMe.md
+    Luke Durtschi: Arithmetic functions and tests, load and store functions
+    Matt Scott: Also provided skeleton and created compiler for instructions to processed
+    Damian Sacks: Branching functions and tests, halt function and tests
 """
 
 __author__ = "Kevin Bacon, Luke Durtschi, Matt Scott, Damian Sacks"
