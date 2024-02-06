@@ -48,10 +48,12 @@ class CPU:
       return self.memory.updateMemory(memory_location, word)
         
     def load(self, memory_location):
-        print('load')
+        # Load a word from a specific memory_location into the accumulator
+        self.accumulator.value = self.memory.data[int(memory_location)]
     
     def store(self, memory_location):
-        print('store')
+        # Store a word from the accumulator into a specific memory_location
+        self.memory.data[int(memory_location)] = self.accumulator.value
     
     def add(self, memory_location):
         # Add a word from a specific memory_location to the accumulator
