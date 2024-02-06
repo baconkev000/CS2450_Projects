@@ -24,9 +24,9 @@ These instructions will get you through launching phase of this project.
 ```
 I/O operation:
 
-READ = 10                       Read a word from the keyboard into a specific location in memory.
+READ = 10                       Read a word from a specific location in memory to screen.
 
-WRITE = 11                     Write a word from a specific location in memory to screen.
+WRITE = 11                     Write a word from the keyboard into a specific location in memory.
 
 Load/store operations:
 
