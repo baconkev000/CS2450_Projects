@@ -7,8 +7,9 @@ __version__ = "0.1.0"
 __license__ = "MIT"
 
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from main import *
-
 class TestWrite(unittest.TestCase):
     def setUp(self):
         self.cpu = CPU()
@@ -45,7 +46,9 @@ class TestWrite(unittest.TestCase):
         result = self.cpu.execute_READ(0)
 
         self.assertEqual(result, "test")
-        self.assertRaises(Exception, self.cpu.execute_WRITE(0,"test2"))
+        with redirect_stdout(StringIO()):
+            self.assertRaises(Exception, self.cpu.execute_WRITE(0,"test2"))
+
 
     def test_can_read_unwritten_location(self):
         """
