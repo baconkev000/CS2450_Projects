@@ -14,6 +14,9 @@ class TestWrite(unittest.TestCase):
         self.cpu = CPU()
 
     def test_can_write(self):
+        """
+        testing that a user can write a word into memory given a valid location
+        """
         self.cpu.execute_WRITE(0,"test")
         result = self.cpu.memory.getMemoryLoc(0)
 
@@ -21,6 +24,9 @@ class TestWrite(unittest.TestCase):
         self.assertNotEqual(result, "Not Test")
     
     def test_can_read(self):
+        """
+        testing that a user can read a word or instruction from memory given a valid location
+        """
         self.cpu.execute_WRITE(0,"read")
         result = self.cpu.execute_READ(0)
 
@@ -31,20 +37,20 @@ class TestWrite(unittest.TestCase):
         self.assertEqual(result, "read")
         self.assertNotEqual(result, "Not read")
 
-    def test_can_overwrite_memory(self):
+    def test_cannot_overwrite_memory(self):
+        """
+        testing that a user cannot overwrite memory and exception is raised
+        """
         self.cpu.execute_WRITE(0,"test")
         result = self.cpu.execute_READ(0)
 
         self.assertEqual(result, "test")
-
-
-        self.cpu.execute_WRITE(0,"test2")
-        result = self.cpu.execute_READ(0)
-
-        self.assertNotEqual(result, "test")
-        self.assertEqual(result, "test2")
+        self.assertRaises(Exception, self.cpu.execute_WRITE(0,"test2"))
 
     def test_can_read_unwritten_location(self):
+        """
+        testing that a user can read from an unwritten location and it returns None
+        """
         cpu = CPU()
         result = cpu.execute_READ(0)
         self.assertEqual(result, None)
