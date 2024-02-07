@@ -28,7 +28,7 @@ class Memory:
       if(self.data[loc] == None):
         self.data[loc] = word
       else:
-        raise Exception(f'Memory is already used at location {loc}.')
+        raise Exception(f'Memory is already used at location {loc}. Please try a different memory location.')
 
     def clearMemory(self):
        self.data = [0] * 100
@@ -59,7 +59,6 @@ class CPU:
         print()
         print(type(inst))    # the exception type
         print(f'{inst}\nPlease try a different memory location.')          # __str__ allows args to be printed directly,
-        print(self.memory.data)
         print()
 
         
