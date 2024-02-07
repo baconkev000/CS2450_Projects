@@ -122,17 +122,29 @@ class CPU:
       '''Gets the user's code from the consol and stores it in the list instructions'''
       #Welcome message
       print("Welcome to UVSim! After each instruction, press enter.")
+      print("Make sure to type END to mark the end of your instruction.")
       print("Type Compile, when your program is complete: \n")
+
+      no_end = True
 
       #User input, BasicML code
       ui = ""
 
       #Loops to get the code from the user
+      #Also checks if an END instruction was written
       while ui != "compile".upper():
           ui = str(input()).upper()
 
-          if ui.upper() != "COMPILE":
-            self.instructions.append(ui)
+          if ui != "COMPILE":
+            if ui != "END":
+              self.instructions.append(ui)
+
+          if ui == "END":
+             no_end = False
+
+      if no_end == True:
+         print('Error. No END instruction written in the program.')
+         exit()
     
     def compile(self):
       '''Processes the user's code and catches an error before running it
@@ -142,8 +154,6 @@ class CPU:
       '''
       #Will be used to store instructions at a certain area in memory starting from 0
       memory_location = 0
-
-      no_halt = True
 
       #Loops through the user's code and checks for errors
       for code in self.instructions:
@@ -189,15 +199,7 @@ class CPU:
              #Code was valid and is added to a location in memory
              self.memory.data[memory_location] = code
              memory_location += 1
-
-             #If a halt instruction is found, this part marks it as found 
-             if command == 43:
-                no_halt = False
-
-      #Ensures that there is a halt instruction so the program doesn't run indefinitley 
-      if no_halt == True:
-         print('Error no halt instruction')
-         exit()       
+   
 
     def process_code(self):
 
