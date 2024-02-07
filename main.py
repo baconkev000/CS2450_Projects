@@ -64,7 +64,7 @@ class CPU:
         
     def load(self, memory_location):
         # Load a word from a specific memory_location into the accumulator
-        self.accumulator.value = self.memory.data[int(memory_location)]
+        self.accumulator.value = int(self.memory.data[int(memory_location)])
     
     def store(self, memory_location):
         # Store a word from the accumulator into a specific memory_location
