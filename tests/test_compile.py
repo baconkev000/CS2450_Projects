@@ -9,6 +9,10 @@ __license__ = "MIT"
 '''
 AI wrote these tests and I learned what they
 mean. I then practiced until I could write them on my own.
+
+Process Code has the exact same code as compile() with some
+additional code, meaning compile doesn't need it's own 
+tests as it's covered in the tests for process_code(). 
 '''
 
 import unittest
