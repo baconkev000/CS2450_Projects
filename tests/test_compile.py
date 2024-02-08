@@ -7,12 +7,14 @@ __version__ = "0.1.0"
 __license__ = "MIT"
 
 '''
-AI wrote these tests and I learned what they
-mean. I then practiced until I could write them on my own.
+These tests involve Patch as well as some other testing
+concepts that were out of my scope. So AI wrote these tests,
+I learned what each line meant, then practiced until I could 
+write each test on my own.
 
 Process Code has the exact same code as compile() with some
-additional code, meaning compile doesn't need it's own 
-tests as it's covered in the tests for process_code(). 
+additional code, meaning to avoid redudancy, compile doesn't need 
+it's own tests as it's covered in the tests for process_code(). 
 '''
 
 import unittest
