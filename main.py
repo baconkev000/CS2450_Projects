@@ -75,78 +75,6 @@ class CPU:
        '''Enables the users ability to type to the console'''
        self.console.config(state='normal')
 
-    def execute_READ(self, memory_location):
-       '''Creates a pop-up box that asks for user input'''
-       self.enable_console()
-       #Learned simplediaglog method from AI
-       #Creates a pop-up box asking for a word
-       user_input = simpledialog.askstring("Input", "Enter a word")
-       #Updates the memory on whatever the user entered
-       self.memory.updateMemory(memory_location, user_input)
-
-    def execute_WRITE(self, memory_location):
-    # Write a word from a specific memory_location in memory to the screen changes
-      try:
-        to_print = self.memory.getMemoryLoc(memory_location)
-        self.update_console(to_print)
-      except Exception as inst:
-        error_message = "\n" + str(type(inst)) + "\n" + str(inst) + "\nError cannot process None-Type as Instruction"
-        self.update_console(error_message)
-
-    def load(self, memory_location):
-        # Load a word from a specific memory_location into the accumulator
-        self.accumulator.value = int(self.memory.data[int(memory_location)])
-    
-    def store(self, memory_location):
-        # Store a word from the accumulator into a specific memory_location
-        self.memory.data[int(memory_location)] = self.accumulator.value
-    
-    def add(self, memory_location):
-        # Add a word from a specific memory_location to the accumulator
-        self.accumulator.value += int(self.memory.data[memory_location])
-
-    def subtract(self, memory_location):
-        # Subtract a word from a specific memory_location from the word in the accumulator
-        self.accumulator.value -= int(self.memory.data[memory_location])
-
-    def divide(self, memory_location):
-        # Divide the word in the accumulator by a word from a specific memory_location
-        self.accumulator.value /= int(self.memory.data[memory_location])
-
-    def multiply(self, memory_location):
-        # Multiply a word from a specific memory_location to the accumulator
-        self.accumulator.value *= int(self.memory.data[memory_location])
-
-    def branch(self, location):
-        if self.pointer != location:#helps to avoid infinite loops
-            self.pointer = location
-        else:
-            self.update_console("\nCannot Branch to Self")
-            self.pointer += 1
-
-    def branchneg(self,location):
-        if self.accumulator.value < 0:#checks if accumulator is negative
-            if self.pointer != location:
-                self.pointer = location
-            else:
-                self.update_console("\nCannot Branch to Self")
-                self.pointer += 1
-        else:
-            self.pointer += 1
-
-    def branchzero(self,location):
-        if self.accumulator.value == 0:#checks if accumulator is zero
-            if self.pointer != location:
-                self.pointer = location
-            else:
-                self.update_console("\nCannot Branch to Self")
-                self.pointer += 1
-        else:
-            self.pointer += 1
-
-    def halt(self):
-        simpledialog.askstring("Input", "Paused. Press Ok or cancel to continue")
-        self.pointer +=1
 
     def get_code(self, text):
       '''Clears the Console and gets the user's code from the console and stores it in the list instructions'''
@@ -302,49 +230,89 @@ class CPU:
 
           #Instruction at the location is valid and can be processed
           if command == 10:
-            data = self.execute_READ(location)
-            #print(f'data: {data}, found at memory location: {location}')
+            '''READ function'''
+            self.enable_console()
+            #Learned simplediaglog method from AI
+            #Creates a pop-up box asking for a word
+            user_input = simpledialog.askstring("Input", "Enter a word")
+            #Updates the memory on whatever the user entered
+            self.memory.updateMemory(location, user_input)
             self.pointer += 1
         
           elif command == 11:
-            self.execute_WRITE(location)
+            '''WRITE from memory to console.'''
+            try:
+              to_print = self.memory.getMemoryLoc(location)
+              self.update_console(to_print)
+            except Exception as inst:
+              error_message = "\n" + str(type(inst)) + "\n" + str(inst) + "\nError cannot process None-Type as Instruction"
+              self.update_console(error_message)
             self.pointer += 1
           
           elif command == 20:
-            self.load(location)
+            '''LOAD value from memory into accumulator'''
+            self.accumulator.value = int(self.memory.data[int(location)])
             self.pointer += 1
 
           elif command == 21:
-            self.store(location)
+            '''STORE a word from the accumulator into memory'''
+            self.memory.data[int(location)] = self.accumulator.value
             self.pointer += 1
 
           elif command == 30:
-            self.add(location)
+            # Add a word from a specific memory_location to the accumulator
+            self.accumulator.value += int(self.memory.data[location])
             self.pointer += 1
 
           elif command == 31:
-            self.subtract(location)
+            # Subtract a word from a specific memory_location from the word in the accumulator
+            self.accumulator.value -= int(self.memory.data[location])
             self.pointer += 1
 
           elif command == 32:
-            self.divide(location)
+            # Divide the word in the accumulator by a word from a specific memory_location
+            self.accumulator.value /= int(self.memory.data[location])
             self.pointer += 1
 
           elif command == 33:
-            self.multiply(location)
+            # Multiply a word from a specific memory_location to the accumulator
+            self.accumulator.value *= int(self.memory.data[location])
             self.pointer += 1
 
           elif command == 40:
-            self.branch(location)
+            #BRANCH to a location in memory
+            if self.pointer != location:#helps to avoid infinite loops
+                self.pointer = location
+            else:
+                self.update_console("\nCannot Branch to Self")
+                self.pointer += 1
 
           elif command == 41:
-            self.branchneg(location)
+            #BRANCHNEG
+            if self.accumulator.value < 0:#checks if accumulator is negative
+                if self.pointer != location:
+                    self.pointer = location
+                else:
+                    self.update_console("\nCannot Branch to Self")
+                    self.pointer += 1
+            else:
+                self.pointer += 1
 
           elif command == 42:
-            self.branchzero(location)
+            #BRANCHZERO
+            if self.accumulator.value == 0:#checks if accumulator is zero
+                if self.pointer != location:
+                    self.pointer = location
+                else:
+                    self.update_console("\nCannot Branch to Self")
+                    self.pointer += 1
+            else:
+                self.pointer += 1
 
           elif command == 43:
-            self.halt()
+            #HALT
+            simpledialog.askstring("Input", "Paused. Press Ok or cancel to continue")
+            self.pointer +=1
 
     def display_window(self):
       '''Creates the window, text box, and submit button. Passes text to get_code when button is clicked'''
