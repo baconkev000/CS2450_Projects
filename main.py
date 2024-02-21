@@ -31,7 +31,7 @@ class Memory:
        self.data[loc] = word
 
     def clearMemory(self):
-       self.data = [0] * 100  
+       self.data = [None] * 100  
 
 class CPU:
     def __init__(self):
