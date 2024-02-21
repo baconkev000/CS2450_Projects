@@ -1,3 +1,6 @@
+from tkinter import *
+from tkinter import simpledialog
+
 """
 CS 2450 - Project
 Contributions:
@@ -25,14 +28,10 @@ class Memory:
        return self.data[loc]
     
     def updateMemory(self, loc, word):
-      if(self.data[loc] == None):
-        self.data[loc] = word
-      else:
-        raise Exception(f'Memory is already used at location {loc}. Please try a different memory location.')
+       self.data[loc] = word
 
     def clearMemory(self):
-       self.data = [0] * 100
-    
+       self.data = [0] * 100  
 
 class CPU:
     def __init__(self):
@@ -47,21 +46,53 @@ class CPU:
         #Keeps the users instructions
         self.instructions = []
 
-    def execute_READ(self, memory_location):
-    # Read a word from the keyboard into a specific memory_location in memory
-      return self.memory.getMemoryLoc(memory_location)
+        self.program = Tk()
 
-    def execute_WRITE(self, memory_location, word):
+        #Creates a console and displays a welcome message
+        self.console = Text()
+        self.console.config(bg='black', fg='green', insertbackground='green')
+        self.console.pack()
+
+        #Creates Textbox for command line
+        self.command_text = Text(self.program)
+        self.command_text.configure(bg='white', fg='black')
+        self.command_text.pack()
+
+    def update_console(self, message):
+       '''Updates the message on the console'''
+       self.enable_console()
+       #Learned to put END before inserting from AI
+       self.console.insert(END, "\n")
+       self.console.insert(END, message)
+       self.console.insert(END, "\n")
+       self.disable_console()
+
+    def disable_console(self):
+       '''Disables the users ability to type to the console'''
+       self.console.config(state='disabled')
+
+    def enable_console(self):
+       '''Enables the users ability to type to the console'''
+       self.console.config(state='normal')
+
+    def execute_READ(self, memory_location):
+       '''Creates a pop-up box that asks for user input'''
+       self.enable_console()
+       #Learned simplediaglog method from AI
+       #Creates a pop-up box asking for a word
+       user_input = simpledialog.askstring("Input", "Enter a word")
+       #Updates the memory on whatever the user entered
+       self.memory.updateMemory(memory_location, user_input)
+
+    def execute_WRITE(self, memory_location):
     # Write a word from a specific memory_location in memory to the screen changes
       try:
-        self.memory.updateMemory(memory_location, word)
+        to_print = self.memory.getMemoryLoc(memory_location)
+        self.update_console(to_print)
       except Exception as inst:
-        print()
-        print(type(inst))    # the exception type
-        print(f'{inst}\nPlease try a different memory location.')          # __str__ allows args to be printed directly,
-        print()
+        error_message = "\n" + str(type(inst)) + "\n" + str(inst) + "\nError cannot process None-Type as Instruction"
+        self.update_console(error_message)
 
-        
     def load(self, memory_location):
         # Load a word from a specific memory_location into the accumulator
         self.accumulator.value = int(self.memory.data[int(memory_location)])
@@ -90,7 +121,7 @@ class CPU:
         if self.pointer != location:#helps to avoid infinite loops
             self.pointer = location
         else:
-            print("Cannot branch to self.")
+            self.update_console("\nCannot Branch to Self")
             self.pointer += 1
 
     def branchneg(self,location):
@@ -98,7 +129,7 @@ class CPU:
             if self.pointer != location:
                 self.pointer = location
             else:
-                print("Cannot branch to self.")
+                self.update_console("\nCannot Branch to Self")
                 self.pointer += 1
         else:
             self.pointer += 1
@@ -108,43 +139,46 @@ class CPU:
             if self.pointer != location:
                 self.pointer = location
             else:
-                print("Cannot branch to self.")
+                self.update_console("\nCannot Branch to Self")
                 self.pointer += 1
         else:
             self.pointer += 1
 
     def halt(self):
-        print("Program paused, press enter to resume:")
-        input()
+        simpledialog.askstring("Input", "Paused. Press Ok or cancel to continue")
         self.pointer +=1
 
-    def get_code(self):
-      '''Gets the user's code from the consol and stores it in the list instructions'''
-      #Welcome message
-      print("Welcome to UVSim! After each instruction, press enter.")
-      print("Make sure to type END to mark the end of your instruction.")
-      print("Type Compile, when your program is complete: \n")
+    def get_code(self, text):
+      '''Clears the Console and gets the user's code from the console and stores it in the list instructions'''
+      #GPT taught me the below line
+      #Gets the text the user entered
+      self.enable_console()
+      self.console.delete("1.0", END)
+      self.console.insert("1.0", "Welcome to UVSim! After each instruction, press enter.\nEvery instruction (including halt) is formatted #### (Command)(Location)\nMake sure to type END to mark the end of your instruction.\nPress compile when finished.")
+      self.disable_console()
 
-      no_end = True
+      user_input = text.get("1.0", END)
 
-      #User input, BasicML code
-      ui = ""
+      #Splits the input into a list to read
+      self.instructions = user_input.split('\n')
+      #The last value is empty and it takes it out
+      self.instructions.pop()
+      
+      #Checks to make sure there is an END instruction
+      contains_end = False
+      for items in self.instructions:
+         if items.upper() == 'END':
+            contains_end = True
+            break
+         
+      if contains_end == False:
+         #Prints an error message if there is no end instruction
+         no_end = "\nError: No END instruction."
+         self.update_console(no_end)
 
-      #Loops to get the code from the user
-      #Also checks if an END instruction was written
-      while ui != "compile".upper():
-          ui = str(input()).upper()
-
-          if ui != "COMPILE":
-            if ui != "END":
-              self.instructions.append(ui)
-
-          if ui == "END":
-             no_end = False
-
-      if no_end == True:
-         print('Error. No END instruction written in the program.')
-         exit()
+      else:
+         #There was an end instruction, code is ready to compile
+         self.compile()
     
     def compile(self):
       '''Processes the user's code and catches an error before running it
@@ -160,6 +194,18 @@ class CPU:
 
           #Keeps track of the line number for error handling
           self.pointer += 1
+          #Checks if command is END
+          if code.upper() == 'END':
+             self.memory.data[memory_location] = code
+             self.process_code()
+             break
+          
+          #Ensures the instruction is at least 4 digits
+          if len(code) != 4:
+             error_message = "\nError on line " + str(self.pointer) + ".\nInvalid instruction."
+             self.update_console(error_message)
+             break
+             
           #Chooses which operation is performed
           command = code[:2]
           #Ensures that there is a valid int for choosing location in memory
@@ -170,9 +216,8 @@ class CPU:
               location = code[3]
 
             else:
-              print(f'Error on line {self.pointer}.')
-              print('Memory location out of bounds.')
-              exit()
+              error_message = "\nError on line " + str(self.pointer) + ".\nMemory location out of bounds."
+              self.update_console(error_message)
 
           #Input validation, if the code is not valid, a message is given and the program is exited
           #Ensures input is an int, the command is valid, and the memory location is in bounds
@@ -181,26 +226,22 @@ class CPU:
               command = int(command)
 
           except:
-              print(f"Error on line {self.pointer}.")
-              print('Expected a four digit int.')
-              exit()
-
+              error_message = "\nError on line " + str(self.pointer) + ".\nExpected a four digit int."
+              self.update_console(error_message)
+              
           if command not in self.valid_commands:
-              print(f'Error on line {self.pointer}.')
-              print('Invalid command.')
-              exit()
+              error_message = "\nError on line " + str(self.pointer) + ".\nInvalid command."
+              self.update_console(error_message)
 
           elif location < 0 or location > 99:
-              print(f'Error on line {self.pointer}.')
-              print('Memory location out of bounds.')
-              exit()
+              error_message = "\nError on line " + str(self.pointer) + ".\nMemory location out of bounds."
+              self.update_console(error_message)
 
           else:
              #Code was valid and is added to a location in memory
              self.memory.data[memory_location] = code
              memory_location += 1
    
-
     def process_code(self):
 
       '''
@@ -217,10 +258,17 @@ class CPU:
           
           code = self.memory.getMemoryLoc(self.pointer)
           
+          #Checks if the memory location has instructions
           if code == None:
-             print('Error, branched to a location with no defined instruction.')
-             exit()
+             self.update_console("\nError, branched to a location with no defined instruction.")
 
+
+          elif code.upper() == 'END':
+             #Checks if the code is an end instruction resets the program if it is
+             self.memory.clearMemory()
+             self.pointer = 0
+             break
+          
           #Chooses which operation is performed
           command = code[:2]
           #Ensures that there is a valid int for choosing location in memory
@@ -231,9 +279,8 @@ class CPU:
               location = code[3]
 
             else:
-              print(f'Error on line {self.pointer}.')
-              print('Data Overwriting')
-              exit()
+              error_message = "\nError on line " + str(self.pointer) + ".\nData Overwriting"
+              self.update_console(error_message)
 
           #Input validation, if the code is not valid, a message is given and the program is exited
           #Ensures input is an int, the command is valid, and the memory location is in bounds
@@ -242,29 +289,25 @@ class CPU:
               command = int(command)
 
           except:
-              print(f"Error on line {self.pointer}.")
-              print('Data Overwriting')
-              exit()
+              error_message = "\nError on line " + str(self.pointer) + ".\nData Overwriting"
+              self.update_console(error_message)
 
           if command not in self.valid_commands:
-              print(f'Error on line {self.pointer}.')
-              print('Data Overwriting')
-              exit()
+              error_message = "\nError on line " + str(self.pointer) + ".\nData Overwriting"
+              self.update_console(error_message)
 
           elif location < 0 or location > 99:
-              print(f'Error on line {self.pointer}.')
-              print('Data Overwriting')
-              exit()
+              error_message = "\nError on line " + str(self.pointer) + ".\nData Overwriting"
+              self.update_console(error_message)
 
           #Instruction at the location is valid and can be processed
           if command == 10:
             data = self.execute_READ(location)
-            print(f'data: {data}, found at memory location: {location}')
+            #print(f'data: {data}, found at memory location: {location}')
             self.pointer += 1
         
           elif command == 11:
-            word = input("Enter word: ")
-            self.execute_WRITE(location, word)
+            self.execute_WRITE(location)
             self.pointer += 1
           
           elif command == 20:
@@ -295,22 +338,34 @@ class CPU:
             self.branch(location)
 
           elif command == 41:
-              self.branchneg(location)
+            self.branchneg(location)
 
           elif command == 42:
             self.branchzero(location)
 
           elif command == 43:
             self.halt()
+
+    def display_window(self):
+      '''Creates the window, text box, and submit button. Passes text to get_code when button is clicked'''
+      self.enable_console()
+      self.console.insert("1.0", "Welcome to UVSim! After each instruction, press enter.\nEvery instruction (including halt) is formatted #### (Command)(Location)\nMake sure to type END to mark the end of your instruction.\nPress compile when finished.")
+      self.disable_console()
+      #Creates button and passes text to process_code when hit for command line
+      button = Button(self.program, command=lambda: self.get_code(self.command_text), text="COMPILE")
+      button.pack()
+
 def main():
     """ Main entry point of the app """
     
     #Creates the cpu object
     cpu = CPU()
-    cpu.get_code()
-    cpu.compile()
-    cpu.process_code()
+    cpu.display_window()
+    #AI suggested putting main loop in main function to fix bug
+    cpu.program.mainloop()
+
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
     main()
+
