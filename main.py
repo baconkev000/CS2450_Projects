@@ -22,16 +22,67 @@ class Register:
 class Memory:
     def __init__(self, size = 100):
         self.size = size
+        #Holds all data for UVSim
         self.data = [None] * size
+        #Keeps the users instructions
+        self.instructions = []
     
     def getMemoryLoc(self, loc):
-       return self.data[loc]
+        return self.data[loc]
     
     def updateMemory(self, loc, word):
-       self.data[loc] = word
+        self.data[loc] = word
 
     def clearMemory(self):
-       self.data = [None] * 100  
+        self.data = [None] * 100  
+
+class Window:
+    def __init__(self, cpu):
+        self.cpu = cpu
+        self.program = Tk()
+        self.create_widgets()
+
+    def create_widgets(self):
+        '''Creates different parts of the GUI'''
+        self.create_console()
+        self.create_command_text()
+        self.create_compile_button()
+
+    def create_console(self):
+        '''Creates a console for I/O'''
+        self.console = Text()
+        self.console.config(bg='black', fg='green', insertbackground='green')
+        self.console.pack()
+
+    def create_command_text(self):
+        '''Creates Textbox for command line'''
+        self.command_text = Text(self.program)
+        self.command_text.configure(bg='white', fg='black')
+        self.command_text.pack()
+
+    def create_compile_button(self):
+        '''Creates the button pressed to compile BasicML program'''
+        button = Button(self.program, command=self.get_code, text="COMPILE")
+        button.pack()
+
+    def get_code(self):
+        '''Adds ability to call get_code from the Window class'''
+        self.cpu.get_code(self.command_text)
+
+    def display(self):
+        '''Enables the console and displays a welcome message'''
+        self.enable_console()
+        self.console.insert("1.0", "Welcome to UVSim! After each instruction, press enter.\nEvery instruction (including halt) is formatted #### (Command)(Location)\nMake sure to type END to mark the end of your instruction.\nPress compile when finished.")
+        self.disable_console()
+        self.program.mainloop()
+
+    def enable_console(self):
+        '''Enables the users ability to type to the console'''
+        self.console.config(state='normal')
+
+    def disable_console(self):
+        '''Disables the users ability to type to the console'''
+        self.console.config(state='disabled')
 
 class CPU:
     def __init__(self):
@@ -39,62 +90,42 @@ class CPU:
         self.accumulator = Register()
         #A list where instructions are held
         self.memory = Memory()
+        #Window used for GUI
+        self.window = Window(self)
         #Used to point where we are in the program
         self.pointer = 0
         #List of valid commands
         self.valid_commands = [10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43]
-        #Keeps the users instructions
-        self.instructions = []
 
-        self.program = Tk()
-
-        #Creates a console and displays a welcome message
-        self.console = Text()
-        self.console.config(bg='black', fg='green', insertbackground='green')
-        self.console.pack()
-
-        #Creates Textbox for command line
-        self.command_text = Text(self.program)
-        self.command_text.configure(bg='white', fg='black')
-        self.command_text.pack()
 
     def update_console(self, message):
        '''Updates the message on the console'''
-       self.enable_console()
+       self.window.enable_console()
        #Learned to put END before inserting from AI
-       self.console.insert(END, "\n")
-       self.console.insert(END, message)
-       self.console.insert(END, "\n")
-       self.disable_console()
-
-    def disable_console(self):
-       '''Disables the users ability to type to the console'''
-       self.console.config(state='disabled')
-
-    def enable_console(self):
-       '''Enables the users ability to type to the console'''
-       self.console.config(state='normal')
-
+       self.window.console.insert(END, "\n")
+       self.window.console.insert(END, message)
+       self.window.console.insert(END, "\n")
+       self.window.disable_console()
 
     def get_code(self, text):
       '''Clears the Console and gets the user's code from the console and stores it in the list instructions'''
       #GPT taught me the below line
       #Gets the text the user entered
-      self.enable_console()
-      self.console.delete("1.0", END)
-      self.console.insert("1.0", "Welcome to UVSim! After each instruction, press enter.\nEvery instruction (including halt) is formatted #### (Command)(Location)\nMake sure to type END to mark the end of your instruction.\nPress compile when finished.")
-      self.disable_console()
+      self.window.enable_console()
+      self.window.console.delete("1.0", END)
+      self.window.console.insert("1.0", "Welcome to UVSim! After each instruction, press enter.\nEvery instruction (including halt) is formatted #### (Command)(Location)\nMake sure to type END to mark the end of your instruction.\nPress compile when finished.")
+      self.window.disable_console()
 
       user_input = text.get("1.0", END)
 
       #Splits the input into a list to read
-      self.instructions = user_input.split('\n')
+      self.memory.instructions = user_input.split('\n')
       #The last value is empty and it takes it out
-      self.instructions.pop()
+      self.memory.instructions.pop()
       
       #Checks to make sure there is an END instruction
       contains_end = False
-      for items in self.instructions:
+      for items in self.memory.instructions:
          if items.upper() == 'END':
             contains_end = True
             break
@@ -118,7 +149,7 @@ class CPU:
       memory_location = 0
 
       #Loops through the user's code and checks for errors
-      for code in self.instructions:
+      for code in self.memory.instructions:
 
           #Keeps track of the line number for error handling
           self.pointer += 1
@@ -231,7 +262,7 @@ class CPU:
           #Instruction at the location is valid and can be processed
           if command == 10:
             '''READ function'''
-            self.enable_console()
+            self.window.enable_console()
             #Learned simplediaglog method from AI
             #Creates a pop-up box asking for a word
             user_input = simpledialog.askstring("Input", "Enter a word")
@@ -314,23 +345,12 @@ class CPU:
             simpledialog.askstring("Input", "Paused. Press Ok or cancel to continue")
             self.pointer +=1
 
-    def display_window(self):
-      '''Creates the window, text box, and submit button. Passes text to get_code when button is clicked'''
-      self.enable_console()
-      self.console.insert("1.0", "Welcome to UVSim! After each instruction, press enter.\nEvery instruction (including halt) is formatted #### (Command)(Location)\nMake sure to type END to mark the end of your instruction.\nPress compile when finished.")
-      self.disable_console()
-      #Creates button and passes text to process_code when hit for command line
-      button = Button(self.program, command=lambda: self.get_code(self.command_text), text="COMPILE")
-      button.pack()
-
 def main():
     """ Main entry point of the app """
-    
     #Creates the cpu object
     cpu = CPU()
-    cpu.display_window()
-    #AI suggested putting main loop in main function to fix bug
-    cpu.program.mainloop()
+    #Displays GUI window
+    cpu.window.display()
 
 
 if __name__ == "__main__":
