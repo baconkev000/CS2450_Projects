@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import simpledialog
+from tkinter import messagebox
+
 
 """
 CS 2450 - Project
@@ -101,6 +103,7 @@ class CPU:
        self.window.console.insert(END, "\n")
        self.window.console.insert(END, message)
        self.window.console.insert(END, "\n")
+       self.clearCompiler()
 
     def get_code(self, text):
       '''Clears the Console and gets the user's code from the console and stores it in the list instructions'''
@@ -195,7 +198,11 @@ class CPU:
              #Code was valid and is added to a location in memory
              self.memory.data[memory_location] = code
              memory_location += 1
-   
+
+    def clearCompiler(self):
+        self.memory.clearMemory()
+        self.pointer = 0
+
     def process_code(self):
 
       '''
@@ -219,8 +226,7 @@ class CPU:
 
           elif code.upper() == 'END':
              #Checks if the code is an end instruction resets the program if it is
-             self.memory.clearMemory()
-             self.pointer = 0
+             self.clearCompiler()
              break
           
           #Chooses which operation is performed
@@ -234,7 +240,8 @@ class CPU:
 
             else:
               error_message = "\nError on line " + str(self.pointer) + ".\nData Overwriting"
-              self.update_console(error_message)
+              self.clearCompiler()
+              self.pointer = 0
 
           #Input validation, if the code is not valid, a message is given and the program is exited
           #Ensures input is an int, the command is valid, and the memory location is in bounds
@@ -257,18 +264,10 @@ class CPU:
           #Instruction at the location is valid and can be processed
           if command == 10:
             '''READ function'''
-            #Learned simplediaglog method from AI
             #Creates a pop-up box asking for a word
             self.window.console.delete('1.0',END)
-            self.update_console("Enter a word\n")
-            while True:#this while loop is used to allow input from the console
-                self.window.program.update()#updates the window while waiting for valid user input
-                words  = self.window.console.get('1.0',END)[:-1]
-                if len(words) > 1 and words[-1] == '\n':#when the program gets two new lines in a row this statement is true
-                    word = words[:-1].split('\n')[-1]#gets newest line and verifies that it is a valid input
-                    if len(word) > 1 and word != 'Prog: Enter a word':
-                        user_input = word
-                        break
+            user_input = simpledialog.askstring('Word', 'Please enter a word.')
+
             #Updates the memory on whatever the user entered
             self.memory.updateMemory(location, user_input)
             self.pointer += 1
@@ -354,7 +353,6 @@ def main():
     cpu = CPU()
     #Displays GUI window
     cpu.window.display()
-
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
