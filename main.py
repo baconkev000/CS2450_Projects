@@ -1,7 +1,5 @@
 from tkinter import *
 from tkinter import simpledialog
-from tkinter import messagebox
-
 
 """
 CS 2450 - Project
@@ -202,11 +200,7 @@ class CPU:
              #Code was valid and is added to a location in memory
              self.memory.data[memory_location] = code
              memory_location += 1
-
-    def clearCompiler(self):
-        self.memory.clearMemory()
-        self.pointer = 0
-
+   
     def process_code(self):
 
       '''
@@ -230,7 +224,8 @@ class CPU:
 
           elif code.upper() == 'END':
              #Checks if the code is an end instruction resets the program if it is
-             self.clearCompiler()
+             self.memory.clearMemory()
+             self.pointer = 0
              break
           
           #Chooses which operation is performed
@@ -244,8 +239,7 @@ class CPU:
 
             else:
               error_message = "\nError on line " + str(self.pointer) + ".\nData Overwriting"
-              self.clearCompiler()
-              self.pointer = 0
+              self.update_console(error_message)
 
           #Input validation, if the code is not valid, a message is given and the program is exited
           #Ensures input is an int, the command is valid, and the memory location is in bounds
@@ -357,6 +351,7 @@ def main():
     cpu = CPU()
     #Displays GUI window
     cpu.window.display()
+
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
