@@ -9,6 +9,7 @@ These instructions will get you through launching phase of this project.
 ### Launching Project
 
 - Clone this repository
+- Install TKinter
 
 ### Running Project
 
