@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import simpledialog
+from tkinter import filedialog
 
 """
 CS 2450 - Project
@@ -48,6 +49,31 @@ class Window:
         self.program.resizable(width=False,height=False)
         self.create_widgets()
 
+    def saveFile(self):
+       '''Saves file to computer as txt file'''
+       file = filedialog.asksaveasfile(defaultextension = '.txt',
+                                       filetypes=[("Text file", ".txt")])
+       
+       if file is None:
+          return
+       filetext = str(self.command_text.get(1.0,END))
+       file.write(filetext)
+       file.close()
+
+    def loadFile(self):
+      '''Loads file to UVSim'''
+
+      try:
+
+        filepath = filedialog.askopenfilename(title="Open BasicML Program", filetypes=[("Text file", ".txt")])
+        file = open(filepath, 'r')
+        text = file.read()
+        self.command_text.insert("1.0", text)
+        file.close()
+
+      except:
+         return
+
     def create_widgets(self):
         '''Creates different parts of the GUI'''
 
@@ -71,6 +97,10 @@ class Window:
         '''Creates the button pressed to compile BasicML program'''
         button = Button(self.program, command=self.get_code, text="COMPILE")
         button.place(x=875,y=25)
+        save_button = Button(self.program, command=self.saveFile, text ="SAVE")
+        save_button.place(x=875, y=60)
+        load_button = Button(self.program, comman=self.loadFile, text="LOAD")
+        load_button.place(x=875, y=95)
 
     def get_code(self):
         '''Adds ability to call get_code from the Window class'''
