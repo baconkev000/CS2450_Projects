@@ -68,6 +68,7 @@ class Window:
         filepath = filedialog.askopenfilename(title="Open BasicML Program", filetypes=[("Text file", ".txt")])
         file = open(filepath, 'r')
         text = file.read()
+        self.command_text.delete("1.0", "end")
         self.command_text.insert("1.0", text)
         file.close()
 
@@ -94,7 +95,7 @@ class Window:
         self.command_text.pack(pady=20)
 
     def create_compile_button(self):
-        '''Creates Save, Load, and Compile button'''
+        '''Creates the button pressed to compile BasicML program'''
         button = Button(self.program, command=self.get_code, text="COMPILE")
         button.place(x=875,y=25)
         save_button = Button(self.program, command=self.saveFile, text ="SAVE")
