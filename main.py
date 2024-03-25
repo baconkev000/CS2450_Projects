@@ -1,3 +1,4 @@
+import math
 from tkinter import *
 from tkinter import simpledialog
 from tkinter import filedialog
@@ -306,24 +307,48 @@ class CPU:
             #Learned simplediaglog method from AI
             #Creates a pop-up box asking for a word
             self.window.console.delete('1.0',END)
-            self.update_console("Enter a word\n")
+            self.update_console("Enter a word: \n")
             while True:#this while loop is used to allow input from the console
                 self.window.program.update()#updates the window while waiting for valid user input
                 words  = self.window.console.get('1.0',END)[:-1]
                 if len(words) > 1 and words[-1] == '\n':#when the program gets two new lines in a row this statement is true
                     word = words[:-1].split('\n')[-1]#gets newest line and verifies that it is a valid input
-                    if len(word) > 1 and word != 'Prog: Enter a word':
+                    if len(word) > 0 and word != 'Enter a word: ':
                         user_input = word
-                        break
+                        try:
+                            user_input = int(user_input)#this section prevents input that isn't an int of less than 6 digits
+                            if abs(user_input) > 999999:
+                                self.update_console("Please enter an int less than six digits\n\nEnter a word: \n")
+                            else:
+                                break
+                        except Exception as error:
+                            self.update_console("Please enter an int less than six digits\n\nEnter a word: \n")
+
             #Updates the memory on whatever the user entered
-            self.memory.updateMemory(location, user_input)
+            if abs(user_input) < 9000:
+                self.memory.updateMemory(location, str(user_input))
+            else:
+                for i in range(10):
+                    if self.memory.getMemoryLoc(90+i) == None:
+                        temp = str(user_input)
+                        val = "9{}{}".format(i,temp[:2])
+                        self.memory.updateMemory(location,val)
+                        self.memory.updateMemory(90+i,temp[2:])
+                        break
+                    elif i == 9:
+                        self.update_console("Extended int memory full, unable to store value")
+                        break
             self.memory.pointer += 1
         
           elif command == 11:
             '''WRITE from memory to console.'''
             try:
               to_print = self.memory.getMemoryLoc(location)
-              self.update_console(to_print)
+              if to_print[0] == '9' and len(to_print) == 4:#check if the memory loc is an extended int
+                  to_print = "{}{}".format(to_print[2:],self.memory.getMemoryLoc(int(to_print[:2])))
+                  self.update_console(to_print)
+              else:
+                  self.update_console(to_print)#the memory loc isn't an extended int so just print
             except Exception as inst:
               error_message = "\n" + str(type(inst)) + "\n" + str(inst) + "\nError cannot process None-Type as Instruction"
               self.update_console(error_message)
@@ -331,32 +356,83 @@ class CPU:
           
           elif command == 20:
             '''LOAD value from memory into accumulator'''
-            self.accumulator.value = int(self.memory.data[int(location)])
+            to_load = self.memory.getMemoryLoc(location)
+            if to_load[0] == '9' and len(to_load) == 4:  # check if the memory loc is an extended int
+                to_load = "{}{}".format(to_load[2:], self.memory.getMemoryLoc(int(to_load[:2])))
+                self.accumulator.value = int(to_load)
+            else:
+                self.accumulator.value = int(to_load)  # the memory loc isn't an extended int so just print
+
             self.memory.pointer += 1
 
           elif command == 21:
             '''STORE a word from the accumulator into memory'''
-            self.memory.data[int(location)] = self.accumulator.value
+            accVal = self.accumulator.value
+            if abs(accVal) < 9000:
+                self.memory.updateMemory(location, str(accVal))
+            else:
+                for i in range(10):
+                    if self.memory.getMemoryLoc(90+i) == None:
+                        temp = str(accVal)
+                        val = "9{}{}".format(i,temp[:2])
+                        self.memory.updateMemory(location,val)
+                        self.memory.updateMemory(90+i,temp[2:])
+                        break
+                    elif i == 9:
+                        self.update_console("Extended int memory full, unable to store value")
+                        break
+
             self.memory.pointer += 1
 
           elif command == 30:
             # Add a word from a specific memory_location to the accumulator
-            self.accumulator.value += int(self.memory.data[location])
+            val = self.memory.getMemoryLoc(location)
+            if val[0] == '9' and len(val) == 4:  # check if the memory loc is an extended int
+                val = "{}{}".format(val[2:], self.memory.getMemoryLoc(int(val[:2])))
+            val = self.accumulator.value + int(val)
+            if abs(val) > 999999:
+                self.update_console("Unable to store int greater than six digits, operation not performed\n")
+            else:
+                self.accumulator.value = val
             self.memory.pointer += 1
 
           elif command == 31:
             # Subtract a word from a specific memory_location from the word in the accumulator
-            self.accumulator.value -= int(self.memory.data[location])
+            val = self.memory.getMemoryLoc(location)
+            if val[0] == '9' and len(val) == 4:  # check if the memory loc is an extended int
+                val = "{}{}".format(val[2:], self.memory.getMemoryLoc(int(val[:2])))
+            val = self.accumulator.value - int(val)
+            if abs(val) > 999999:
+                self.update_console("Unable to store int greater than six digits, operation not performed\n")
+            else:
+                self.accumulator.value = val
+
             self.memory.pointer += 1
 
           elif command == 32:
             # Divide the word in the accumulator by a word from a specific memory_location
-            self.accumulator.value /= int(self.memory.data[location])
+            val = self.memory.getMemoryLoc(location)
+            if val[0] == '9' and len(val) == 4:  # check if the memory loc is an extended int
+                val = "{}{}".format(val[2:], self.memory.getMemoryLoc(int(val[:2])))
+            val = int(self.accumulator.value/int(val))
+            if abs(val) > 999999:
+                self.update_console("Unable to store int greater than six digits, operation not performed\n")
+            else:
+                self.accumulator.value = val
+
             self.memory.pointer += 1
 
           elif command == 33:
             # Multiply a word from a specific memory_location to the accumulator
-            self.accumulator.value *= int(self.memory.data[location])
+            val = self.memory.getMemoryLoc(location)
+            if val[0] == '9' and len(val) == 4:  # check if the memory loc is an extended int
+                val = "{}{}".format(val[2:], self.memory.getMemoryLoc(int(val[:2])))
+            val = int(val)*self.accumulator.value
+            if abs(val) > 999999:
+                self.update_console("Unable to store int greater than six digits, operation not performed\n")
+            else:
+                self.accumulator.value = val
+
             self.memory.pointer += 1
 
           elif command == 40:
