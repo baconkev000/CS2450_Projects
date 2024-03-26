@@ -101,7 +101,7 @@ class Window:
         button.place(x=875,y=25)
         save_button = Button(self.program, command=self.saveFile, text ="SAVE")
         save_button.place(x=875, y=60)
-        load_button = Button(self.program, comman=self.loadFile, text="LOAD")
+        load_button = Button(self.program, comman=self.loadFile, text="OPEN")
         load_button.place(x=875, y=95)
 
     def get_code(self):
