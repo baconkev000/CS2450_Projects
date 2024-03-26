@@ -97,7 +97,7 @@ class Window:
 
     def create_compile_button(self):
         '''Creates the button pressed to compile BasicML program'''
-        button = Button(self.program, command=self.get_code, text="COMPILE")
+        button = Button(self.program, command=self.get_code, text="RUN")
         button.place(x=875,y=25)
         save_button = Button(self.program, command=self.saveFile, text ="SAVE")
         save_button.place(x=875, y=60)
