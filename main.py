@@ -304,7 +304,6 @@ class CPU:
           #Instruction at the location is valid and can be processed
           if command == 10:
             '''READ function'''
-            #Learned simplediaglog method from AI
             #Creates a pop-up box asking for a word
             self.window.console.delete('1.0',END)
             self.update_console("Enter a word: \n")
