@@ -21,37 +21,21 @@ class TestLoadAndStore(unittest.TestCase):
         Inputs - (string) 2024
         Expected Output - accumulator.value = (int) 2024
         """
-        self.cpu.memory.data[10] = '202428'
+        self.cpu.memory.data[10] = '2024'
         self.cpu.memory.data[0] = '2010'
         self.cpu.memory.data[1] = "END"
         self.cpu.process_code()
 
         result = self.cpu.accumulator.value
-        self.assertEqual(result, 202428)
+        self.assertEqual(result, 2024)
     
     def test_can_load_six_digits_10(self):
-        # self.cpu.execute_WRITE(0, "10")
-        # self.cpu.load(0)
-        # result = self.cpu.accumulator.value
-
-        # self.assertEqual(result, "10")
-        # self.assertNotEqual(result, 0)
-
-        self.cpu.memory.data[10] = '202428'
-        self.cpu.memory.data[0] = '2010'
-        self.cpu.memory.data[1] = "END"
-        self.cpu.process_code()
-
-        result = self.cpu.accumulator.value
-        self.assertEqual(result, 202428)
-
-    def test__11(self):
-        # self.cpu.execute_WRITE(0, "10")
-        # self.cpu.load(0)
-        # result = self.cpu.accumulator.value
-
-        # self.assertEqual(result, "10")
-        # self.assertNotEqual(result, 0)
+        """
+        TEST #9 - 3/28/2024
+        Tests that user can load 4 digits into acumulator
+        Inputs - (string) 2024
+        Expected Output - accumulator.value = (int) 2024
+        """
 
         self.cpu.memory.data[10] = '202428'
         self.cpu.memory.data[0] = '2010'
@@ -60,22 +44,42 @@ class TestLoadAndStore(unittest.TestCase):
 
         result = self.cpu.accumulator.value
         self.assertEqual(result, 202428)
+
+    def test_can_store_four_digits_11(self):
+        """
+        TEST #9 - 3/28/2024
+        Tests that user can load 4 digits into acumulator
+        Inputs - (string) 2024
+        Expected Output - accumulator.value = (int) 2024
+        """
+
+        self.cpu.accumulator.value = 2000
+        self.cpu.memory.data[0] = "2110"
+        self.cpu.memory.data[1] = "3010"
+        self.cpu.memory.data[2] = "END"
+        self.cpu.process_code()
+
+
+        result = self.cpu.accumulator.value
+        self.assertEqual(result, 4000)
     
-    def test_can_load_four_digits_12(self):
-        # self.cpu.execute_WRITE(0, "10")
-        # self.cpu.load(0)
-        # result = self.cpu.accumulator.value
+    def test_can_store_six_digits_12(self):
+        """
+        TEST #9 - 3/28/2024
+        Tests that user can load 4 digits into acumulator
+        Inputs - (string) 2024
+        Expected Output - accumulator.value = (int) 2024
+        """
 
-        # self.assertEqual(result, "10")
-        # self.assertNotEqual(result, 0)
-
-        self.cpu.memory.data[10] = '202428'
-        self.cpu.memory.data[0] = '2010'
-        self.cpu.memory.data[1] = "END"
+        self.cpu.accumulator.value = 200000
+        self.cpu.memory.data[0] = "2110"
+        self.cpu.memory.data[1] = "3010"
+        self.cpu.memory.data[2] = "END"
         self.cpu.process_code()
 
+
         result = self.cpu.accumulator.value
-        self.assertEqual(result, 202428)
+        self.assertEqual(result, 400000)
 
     def tearDown(self):
         self.cpu.memory.clearMemory()
