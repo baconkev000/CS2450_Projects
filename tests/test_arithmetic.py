@@ -2,9 +2,9 @@
 Arithmetic tests updated by Luke Durtschi
 """
 
-__author__ = "Luke Durtschi"
-__version__ = "0.1.0"
-__license__ = "MIT"
+# __author__ = "Luke Durtschi"
+# __version__ = "0.1.0"
+# __license__ = "MIT"
 
 import unittest
 from main import *
