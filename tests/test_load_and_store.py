@@ -1,6 +1,5 @@
 """
 Load and store tests updated by Kevin Bacon
-d. Each test case should have test case number, short description, test date, inputs, expected outputs, pass/ fail. Display the results in a reporting form that clearly displays the success of your code, This set of assert tests can be used as one of the new metrics for you support of your code quality value.
 """
 
 __author__ = "Kevin Bacon"
@@ -31,10 +30,10 @@ class TestLoadAndStore(unittest.TestCase):
     
     def test_can_load_six_digits_10(self):
         """
-        TEST #9 - 3/28/2024
-        Tests that user can load 4 digits into acumulator
-        Inputs - (string) 2024
-        Expected Output - accumulator.value = (int) 2024
+        TEST #10 - 3/28/2024
+        Tests that user can load 6 digits into acumulator
+        Inputs - (string) 202428
+        Expected Output - accumulator.value = (int) 202428
         """
 
         self.cpu.memory.data[10] = '202428'
@@ -47,10 +46,10 @@ class TestLoadAndStore(unittest.TestCase):
 
     def test_can_store_four_digits_11(self):
         """
-        TEST #9 - 3/28/2024
-        Tests that user can load 4 digits into acumulator
-        Inputs - (string) 2024
-        Expected Output - accumulator.value = (int) 2024
+        TEST #11 - 3/28/2024
+        Tests that user can store 4 digits into memory
+        Inputs - (string) 2000
+        Expected Output - accumulator.value = (int) 2000
         """
 
         self.cpu.accumulator.value = 2000
@@ -65,10 +64,10 @@ class TestLoadAndStore(unittest.TestCase):
     
     def test_can_store_six_digits_12(self):
         """
-        TEST #9 - 3/28/2024
-        Tests that user can load 4 digits into acumulator
-        Inputs - (string) 2024
-        Expected Output - accumulator.value = (int) 2024
+        TEST #12 - 3/28/2024
+        Tests that user can store 6 digits into memory
+        Inputs - (string) 200000
+        Expected Output - accumulator.value = (int) 200000
         """
 
         self.cpu.accumulator.value = 200000
