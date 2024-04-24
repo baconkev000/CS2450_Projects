@@ -15,7 +15,7 @@ class TestArithmetic(unittest.TestCase):
 
     def test_can_add_four_digits_1(self):
         """
-        TEST #1 - 3/28/2024
+        TEST #1 - 4/24/2024
         Tests to make sure the user can add four
         digit numbers to the accumulator.
         Inputs - (string) 1050
@@ -32,7 +32,7 @@ class TestArithmetic(unittest.TestCase):
 
     def test_can_add_six_digits_2(self):
         """
-        TEST #2 - 3/28/2024
+        TEST #2 - 4/24/2024
         Tests to make sure the user can add six
         digit numbers to the accumulator.
         Inputs - (string) 5000
@@ -49,7 +49,7 @@ class TestArithmetic(unittest.TestCase):
 
     def test_can_subtract_four_digits_3(self):
         """
-        TEST #3 - 3/28/2024
+        TEST #3 - 4/24/2024
         Tests to make sure the user can subtract four
         digit numbers to the accumulator.
         Inputs - (string) 3050, (string) 1040
@@ -67,7 +67,7 @@ class TestArithmetic(unittest.TestCase):
 
     def test_can_subtract_six_digits_4(self):
         """
-        TEST #4 - 3/28/2024
+        TEST #4 - 4/24/2024
         Tests to make sure the user can subtract six
         digit numbers to the accumulator.
         Inputs - (string) -9000, (string) 2000
@@ -85,7 +85,7 @@ class TestArithmetic(unittest.TestCase):
 
     def test_can_divide_four_digits_5(self):
         """
-        TEST #5 - 3/28/2024
+        TEST #5 - 4/24/2024
         Tests to make sure the user can divide four
         digit numbers to the accumulator.
         Inputs - (string) 8000, (string) 2000
@@ -103,7 +103,7 @@ class TestArithmetic(unittest.TestCase):
 
     def test_can_divide_six_digits_6(self):
         """
-        TEST #6 - 3/28/2024
+        TEST #6 - 4/24/2024
         Tests to make sure the user can divide six
         digit numbers to the accumulator.
         Inputs - (string) 8000, (string) 4000
@@ -123,7 +123,7 @@ class TestArithmetic(unittest.TestCase):
 
     def test_can_multiply_four_digits_7(self):
         """
-        TEST #7 - 3/28/2024
+        TEST #7 - 4/24/2024
         Tests to make sure the user can multiply a four
         digit number to the accumulator.
         Inputs - (string) 3, (string) 2500
@@ -141,7 +141,7 @@ class TestArithmetic(unittest.TestCase):
 
     def test_can_multiply_six_digits_8(self):
         """
-        TEST #8 - 3/28/2024
+        TEST #8 - 4/24/2024
         Tests to make sure the user can multiply a six
         digit number to the accumulator.
         Inputs - (string) 8000, (string) 20
