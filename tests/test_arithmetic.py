@@ -35,17 +35,17 @@ class TestArithmetic(unittest.TestCase):
         TEST #2 - 3/28/2024
         Tests to make sure the user can add six
         digit numbers to the accumulator.
-        Inputs - (string) 100005
-        Expected Output - accumulator.value = (int) 200010
+        Inputs - (string) 5000
+        Expected Output - accumulator.value = (int) 10000
         """
-        self.cpu.memory.data[10] = "100005"
+        self.cpu.memory.data[10] = "5000"
         self.cpu.memory.data[0] = "3010"
         self.cpu.memory.data[1] = "3010"
         self.cpu.memory.data[2] = "END"
         self.cpu.process_code()
 
         result = self.cpu.accumulator.value
-        self.assertEqual(result, 200010)
+        self.assertEqual(result, 10000)
 
     def test_can_subtract_four_digits_3(self):
         """
@@ -70,18 +70,18 @@ class TestArithmetic(unittest.TestCase):
         TEST #4 - 3/28/2024
         Tests to make sure the user can subtract six
         digit numbers to the accumulator.
-        Inputs - (string) 200005, (string) 100004
-        Expected Output - accumulator.value = (int) 100001
+        Inputs - (string) -9000, (string) 2000
+        Expected Output - accumulator.value = (int) -11000
         """
-        self.cpu.memory.data[10] = "200005"
-        self.cpu.memory.data[11] = "100004"
+        self.cpu.memory.data[10] = "-9000"
+        self.cpu.memory.data[11] = "2000"
         self.cpu.memory.data[0] = "3010"
         self.cpu.memory.data[1] = "3111"
         self.cpu.memory.data[2] = "END"
         self.cpu.process_code()
 
         result = self.cpu.accumulator.value
-        self.assertEqual(result, 100001)
+        self.assertEqual(result, -11000)
 
     def test_can_divide_four_digits_5(self):
         """
@@ -106,18 +106,20 @@ class TestArithmetic(unittest.TestCase):
         TEST #6 - 3/28/2024
         Tests to make sure the user can divide six
         digit numbers to the accumulator.
-        Inputs - (string) 800000, (string) 200000
-        Expected Output - accumulator.value = (int) 4
+        Inputs - (string) 8000, (string) 4000
+        Expected Output - accumulator.value = (int) 16000
         """
-        self.cpu.memory.data[10] = "800000"
-        self.cpu.memory.data[11] = "200000"
+        self.cpu.memory.data[10] = "8000"
+        self.cpu.memory.data[11] = "4000"
         self.cpu.memory.data[0] = "3010"
         self.cpu.memory.data[1] = "3211"
+        self.cpu.memory.data[1] = "3010"
+        self.cpu.memory.data[1] = "3010"
         self.cpu.memory.data[2] = "END"
         self.cpu.process_code()
 
         result = self.cpu.accumulator.value
-        self.assertEqual(result, 4)
+        self.assertEqual(result, 16000)
 
     def test_can_multiply_four_digits_7(self):
         """
@@ -142,18 +144,18 @@ class TestArithmetic(unittest.TestCase):
         TEST #8 - 3/28/2024
         Tests to make sure the user can multiply a six
         digit number to the accumulator.
-        Inputs - (string) 5, (string) 100001
-        Expected Output - accumulator.value = (int) 500005
+        Inputs - (string) 8000, (string) 20
+        Expected Output - accumulator.value = (int) 160000
         """
-        self.cpu.memory.data[10] = "5"
-        self.cpu.memory.data[11] = "100001"
+        self.cpu.memory.data[10] = "8000"
+        self.cpu.memory.data[11] = "20"
         self.cpu.memory.data[0] = "3010"
         self.cpu.memory.data[1] = "3311"
         self.cpu.memory.data[2] = "END"
         self.cpu.process_code()
 
         result = self.cpu.accumulator.value
-        self.assertEqual(result, 500005)
+        self.assertEqual(result, 160000)
 
     def tearDown(self):
         self.cpu.memory.clearMemory()

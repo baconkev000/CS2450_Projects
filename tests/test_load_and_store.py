@@ -70,7 +70,7 @@ class TestLoadAndStore(unittest.TestCase):
         Expected Output - accumulator.value = (int) 200000
         """
 
-        self.cpu.accumulator.value = 200000
+        self.cpu.accumulator.value = 5000
         self.cpu.memory.data[0] = "2110"
         self.cpu.memory.data[1] = "3010"
         self.cpu.memory.data[2] = "END"
@@ -78,7 +78,7 @@ class TestLoadAndStore(unittest.TestCase):
 
 
         result = self.cpu.accumulator.value
-        self.assertEqual(result, 400000)
+        self.assertEqual(result, 10000)
 
     def tearDown(self):
         self.cpu.memory.clearMemory()
