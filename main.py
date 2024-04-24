@@ -315,13 +315,13 @@ class CPU:
                     if len(word) > 0 and word != 'Enter a word: ':
                         user_input = word
                         try:
-                            user_input = int(user_input)#this section prevents input that isn't an int of less than 6 digits
-                            if abs(user_input) > 999999:
-                                self.update_console("Please enter an int less than six digits\n\nEnter a word: \n")
+                            user_input = int(user_input)#this section prevents input that isn't an int of less than 5 digits
+                            if abs(user_input) > 9999:
+                                self.update_console("Please enter an int less than 5 digits\n\nEnter a word: \n")
                             else:
                                 break
                         except Exception as error:
-                            self.update_console("Please enter an int less than six digits\n\nEnter a word: \n")
+                            self.update_console("Please enter an int less than 5 digits\n\nEnter a word: \n")
 
             #Updates the memory on whatever the user entered
             if abs(user_input) < 9000:
@@ -388,11 +388,14 @@ class CPU:
             val = self.memory.getMemoryLoc(location)
             if val[0] == '9' and len(val) == 4:  # check if the memory loc is an extended int
                 val = "{}{}".format(val[2:], self.memory.getMemoryLoc(int(val[:2])))
-            val = self.accumulator.value + int(val)
-            if abs(val) > 999999:
-                self.update_console("Unable to store int greater than six digits, operation not performed\n")
+            if int(val) > 9999 or self.accumulator.value > 9999:
+                self.update_console("Unable to perform operations on integers greater than 4 digits")
             else:
-                self.accumulator.value = val
+                val = self.accumulator.value + int(val)
+                if abs(val) > 999999:
+                    self.update_console("Unable to store int greater than six digits, operation not performed\n")
+                else:
+                    self.accumulator.value = val
             self.memory.pointer += 1
 
           elif command == 31:
@@ -400,11 +403,14 @@ class CPU:
             val = self.memory.getMemoryLoc(location)
             if val[0] == '9' and len(val) == 4:  # check if the memory loc is an extended int
                 val = "{}{}".format(val[2:], self.memory.getMemoryLoc(int(val[:2])))
-            val = self.accumulator.value - int(val)
-            if abs(val) > 999999:
-                self.update_console("Unable to store int greater than six digits, operation not performed\n")
+            if int(val) > 9999 or self.accumulator.value > 9999:
+                self.update_console("Unable to perform operations on integers greater than 4 digits")
             else:
-                self.accumulator.value = val
+                val = self.accumulator.value - int(val)
+                if abs(val) > 999999:
+                    self.update_console("Unable to store int greater than six digits, operation not performed\n")
+                else:
+                    self.accumulator.value = val
 
             self.memory.pointer += 1
 
@@ -413,11 +419,14 @@ class CPU:
             val = self.memory.getMemoryLoc(location)
             if val[0] == '9' and len(val) == 4:  # check if the memory loc is an extended int
                 val = "{}{}".format(val[2:], self.memory.getMemoryLoc(int(val[:2])))
-            val = int(self.accumulator.value/int(val))
-            if abs(val) > 999999:
-                self.update_console("Unable to store int greater than six digits, operation not performed\n")
+            if int(val) > 9999 or self.accumulator.value > 9999:
+                self.update_console("Unable to perform operations on integers greater than 4 digits")
             else:
-                self.accumulator.value = val
+                val = int(self.accumulator.value/int(val))
+                if abs(val) > 999999:
+                    self.update_console("Unable to store int greater than six digits, operation not performed\n")
+                else:
+                    self.accumulator.value = val
 
             self.memory.pointer += 1
 
@@ -426,11 +435,14 @@ class CPU:
             val = self.memory.getMemoryLoc(location)
             if val[0] == '9' and len(val) == 4:  # check if the memory loc is an extended int
                 val = "{}{}".format(val[2:], self.memory.getMemoryLoc(int(val[:2])))
-            val = int(val)*self.accumulator.value
-            if abs(val) > 999999:
-                self.update_console("Unable to store int greater than six digits, operation not performed\n")
+            if int(val) > 9999 or self.accumulator.value > 9999:
+                self.update_console("Unable to perform operations on integers greater than 4 digits")
             else:
-                self.accumulator.value = val
+                val = int(val)*self.accumulator.value
+                if abs(val) > 999999:
+                    self.update_console("Unable to store int greater than six digits, operation not performed\n")
+                else:
+                    self.accumulator.value = val
 
             self.memory.pointer += 1
 
