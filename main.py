@@ -86,7 +86,7 @@ class Window:
     def create_console(self):
         '''Creates a console for I/O'''
         self.console = Text(self.program,height=10,width=100)
-        self.console.config(bg='black', fg='green', insertbackground='green')
+        self.console.config(bg='black', fg='white', insertbackground='white')
         self.console.pack()
 
     def create_command_text(self):
